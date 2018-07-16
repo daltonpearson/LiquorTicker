@@ -21,9 +21,10 @@ api = tweepy.API(auth)
 def search():
     page = requests.get(SEARCH)
     tree = html.fromstring(page.content)
-    store = tree.xpath('//td[@class="store-name-col"]/a/@href')[0][11:].replace('-', ' ')
+    store_link = tree.xpath('//td[@class="store-name-col"]/a/@href')[0]
+    store_name = store_link[11:].replace('-', ' ')
     distance=float(tree.xpath('//td[@class="store-distance-col"]/text()')[0][19:-38])
-    update = f'Berry Blast is in stock at the {store} LCBO, {distance}km away'
+    update = f'Berry Blast is in stock at the {store_name} LCBO, {distance}km away: http://lcbosearch.com{store_link}'
     print(update)
     if distance <= 100:
         api.update_status(update)
